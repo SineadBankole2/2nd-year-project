@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="bg-dark text-white py-3">
+    <div class="container text-center">
+        {% include 'header.html' %}
+    </div>
+</header>
+
+{% include 'nav.html' %}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">My Profile</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h5 class="mb-3">Account Info</h5>
+                <p><strong>Username:</strong> {{ user.username }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+
+                <hr class="my-4">
+
+                <h5 class="mb-3">Personal & Size Info</h5>
+                <form method="post">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        {{ form.age.label_tag }} {{ form.age }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.address.label_tag }} {{ form.address }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.height_cm.label_tag }} {{ form.height_cm }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.weight_kg.label_tag }} {{ form.weight_kg }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.chest_cm.label_tag }} {{ form.chest_cm }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.waist_cm.label_tag }} {{ form.waist_cm }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form.shoe_size.label_tag }} {{ form.shoe_size }}
+                    </div>
+
+                    <button type="submit" class="btn btn-dark mt-2">Update Profile</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

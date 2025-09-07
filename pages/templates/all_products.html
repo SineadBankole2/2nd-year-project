@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Products</title>
+
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+
+<body>
+
+    
+    <header class="bg-dark text-white py-3">
+        <div class="container text-center">
+            {% include 'header.html' %}
+        </div>
+    </header>
+
+    
+    {% include 'nav.html' %}
+
+    
+    <div class="container mt-4">
+        <h2 class="text-center mb-4">All Products</h2>
+
+        {% if products %}
+            <div class="row">
+                {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow-sm">
+                            
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                            {% else %}
+                                <img src="{% static 'images/default.jpg' %}" class="card-img-top" alt="Default Image">
+                            {% endif %}
+
+                            
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ product.name }}</h5>
+                                <p class="card-text">{{ product.description|truncatewords:20 }}</p>
+                                <p class="fw-bold">Price: €{{ product.price }}</p>
+
+                                <div class="size-buttons mb-3">
+                                    <p><strong>Sizes:</strong></p>
+                                    {% for size in product.sizes.all %}
+                                        <button class="btn btn-outline-dark size-btn" data-product-id="{{ product.id }}" data-size-id="{{ size.id }}">
+                                            {{ size.name }}
+                                        </button>
+                                    {% endfor %}
+                                </div>
+
+                                
+                                <a href="#" class="btn btn-dark add-to-cart" data-product-id="{{ product.id }}">
+                                    Add to Cart
+                                </a>
+                                <a href="#" class="btn btn-dark add-to-wishlist">Add to Wishlist</a>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-center">No products available in this category.</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            const addToWishlistBtns = document.querySelectorAll('.add-to-wishlist');
+            addToWishlistBtns.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    const productCard = button.closest('.card');
+                    const selectedSize = productCard.querySelector('.size-btn.active')?.getAttribute('data-size-id');
+
+                    if (!selectedSize) {
+                        alert('Please select a size first.');
+                        return;
+                    }
+
+                    const productId = productCard.querySelector('.size-btn').getAttribute('data-product-id');
+                    window.location.href = `/wishlist/add/${productId}?size=${selectedSize}`;
+                });
+            });
+
+            
+            document.querySelectorAll('.size-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const productCard = button.closest('.card');
+                    productCard.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                });
+            });
+
+            
+            document.querySelectorAll('.add-to-cart').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    const productCard = button.closest('.card');
+                    const selectedSize = productCard.querySelector('.size-btn.active')?.getAttribute('data-size-id');
+
+                    if (!selectedSize) {
+                        alert('Please select a size first.');
+                        event.preventDefault(); 
+                        return;
+                    }
+
+                    const productId = button.getAttribute('data-product-id');
+                    
+                    window.location.href = `/cart/add/${productId}?size=${selectedSize}`;
+                });
+            });
+        });
+    </script>
+
+</body>
+
+</html>

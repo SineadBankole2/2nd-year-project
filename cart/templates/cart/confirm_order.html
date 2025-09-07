@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block metadescription %}
+    Confirm your order and proceed with payment.
+{% endblock %}
+{% block title %}
+    Confirm Order
+{% endblock %}
+{% block content %}
+    <header class="bg-dark text-white py-3">
+        <div class="container text-center">
+            {% include 'header.html' %}
+        </div>
+    </header>
+
+    {% include 'nav.html' %}
+
+    <div class="container mt-4">
+        <h1>Order Confirmation</h1>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <h4>Items in your cart:</h4>
+                <ul>
+                    {% for item in cart_items %}
+                        <li>{{ item.product.name }} x {{ item.quantity }} - €{{ item.product.price }}</li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                
+                <p><strong>Total:</strong> €{{ total }}</p>
+                {% if discount > 0 %}
+                    <p><strong>Voucher/Loyalty Discount Applied:</strong> -€{{ discount }}</p>
+                {% endif %}
+                <p><strong>Final Total:</strong> €{{ final_total }}</p>
+            </div>
+            
+            <div class="col-md-4">
+                <h4>Shipping Information:</h4>
+                <p><strong>Billing Address:</strong> {{ billing_address }}</p>
+                <p><strong>Shipping Address:</strong> {{ shipping_address }}</p>
+            </div>
+        </div>
+
+        <form method="POST" action="{% url 'cart:place_order' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success w-100 mt-3">Place Order</button>
+        </form>
+    </div>
+{% endblock %}

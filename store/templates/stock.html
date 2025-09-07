@@ -1,0 +1,142 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Management - Admin Panel</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+    
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mt-2" style="margin-bottom: 20px;">
+        <div class="container-fluid">
+            <div class="text-end mb-3">
+                <a href="{% url 'store:add_product' %}" class="btn btn-dark">Add Product</a>
+            </div>
+            <div class="text-center mb-3">
+                <a href="{% url 'homepage' %}" class="btn btn-dark">Back to Home</a>
+            </div>
+            <div class="mb-4 text-end">
+                <a href="{% url 'questions:unanswered_admin' %}" class="btn btn-dark">
+                    Unanswered Questions <span class="badge bg-white text-dark border border-dark">{{ unanswered_count }}</span>
+                </a>
+            </div>
+            <div class="text-center mb-3">
+                <a href="{% url 'store:admin_analytics' %}" class="btn btn-dark">Analysis</a>
+            </div>
+        </div>
+    </nav>
+
+    <main style="padding-top: 90px;">
+        <div class="container mt-4">
+            <h2 class="text-center mb-4">Admin Panel - Stock Management</h2>
+
+            <!-- Search Bar -->
+            <form class="d-flex mb-4" action="{% url 'store:stocksearch' %}" method="GET">
+                <input class="form-control me-2" type="search" name="q" placeholder="Search for a product" aria-label="Search">
+                <button class="btn btn-dark my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
+            
+            <div class="card shadow-lg p-4">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Product</th>
+                                <th>Image</th>
+                                <th>Size Quantity</th>
+                                <th>Total Stock</th>
+                                <th>Update Stock</th>
+                                <th>Delete Product</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                                <tr {% if product.quantity_in_stock < 5 %} style="background-color: #ffcccc;" {% endif %}>
+                                    <td class="fw-bold">{{ product.name }}</td>
+                                    <td>
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% else %}
+                                            <img src="{% static 'images/placeholder.png' %}" alt="No image" style="width: 60px; height: 60px; object-fit: cover;">
+                                        {% endif %}
+                                    </td>
+                                    <td class="fs-5">
+                                        <ul style="list-style-type: none; padding-left: 0;">
+                                            {% for size in product.sizes.all %}
+                                                <li>
+                                                    {{ size.name }}: 
+                                                    {% for ps in product.size_stock.all %}
+                                                        {% if ps.size.id == size.id %}
+                                                            {{ ps.quantity }}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+                        
+                                    
+                                    <td class="text-center">
+                                        <strong>Total: {{ product.quantity_in_stock }}</strong>
+                                    </td>
+                        
+                                    <td>
+                                        <!-- Form to update stock for multiple sizes -->
+                                        <form method="POST" action="{% url 'store:update_stock' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                        
+                                            {% for size in product.sizes.all %}
+                                                <div class="mb-2">
+                                                    <label for="size_{{ size.id }}" class="form-label">
+                                                        {{ size.name }} - Current Stock: 
+                                                        {% for ps in product.size_stock.all %}
+                                                            {% if ps.size.id == size.id %}
+                                                                {{ ps.quantity }}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </label>
+                        
+                                                    
+                                                    <input type="number" name="size_{{ size.id }}" id="size_{{ size.id }}" class="form-control" min="0" 
+                                                           value="{% for ps in product.size_stock.all %}{% if ps.size.id == size.id %}{{ ps.quantity }}{% endif %}{% endfor %}">
+                                                </div>
+                                            {% endfor %}
+                        
+                                            <button type="submit" class="btn btn-dark btn-sm">Update</button>
+                                        </form>
+                                    </td>
+                        
+                                    <td>
+                                        <form method="POST" action="{% url 'store:delete_product' product.id %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        
+                    </table>
+                </div>
+            </div>
+
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'store:stock_management' %}" class="btn btn-dark">Back to Stock Management</a>
+            </div>
+            <div class="text-center mt-4">
+                <a href="{% url 'homepage' %}" class="btn btn-dark">Back to Home</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

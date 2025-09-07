@@ -1,0 +1,118 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Admin</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+    <style>
+        .page-header {
+            background-color: black; 
+            color: white;
+            text-align: center;
+        }
+
+        .page-header h2 {
+            font-size: 3rem;
+        }
+
+        .recent-title{
+            background-color: black;
+            color: white;
+        }
+
+        .lowstock-title{
+            background-color: black;
+            color: white;
+            text-align: center;
+            
+        }
+
+        
+    </style>
+
+    
+
+    
+    <main>
+        <div class="page-header">
+            <div class="container">
+                <div class="d-flex justify-content-center align-items-center">
+                    <h2>Admin Analytics</h2>
+                </div>
+            </div>
+        </div>
+
+            
+
+
+                        
+            {% if recent_cart_item %}
+            <div class="card mb-5 shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="recent-title">Recent Purchase</h5>
+
+                    {% if recent_cart_item.product.image %}
+                        <img src="{{ recent_cart_item.product.image.url }}" alt="{{ recent_cart_item.product.name }}"
+                            class="img-fluid rounded mb-3" style="max-height: 200px;">
+                    {% endif %}
+
+                    <p class="card-text">
+                        <strong>Product:</strong> {{ recent_cart_item.product.name }}<br>
+                        <strong>Size:</strong> {{ recent_cart_item.size }}<br>
+                        <strong>Quantity:</strong> {{ recent_cart_item.quantity }}
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+
+
+                        
+                        {% if low_stock_products %}
+                            <h3 class="lowstock-title"> Low Stock Products </h3>
+
+                            {% for product in low_stock_products %}
+                                <div class="card mb-5 shadow-sm">
+                                    <div class="card-body text-center">
+                                        <h5 class="card-title">{{ product.name }}</h5>
+
+                                        {% if product.image %}
+                                            <img src="{{ product.image.url }}" alt="{{ product.name }}" 
+                                                class="img-fluid rounded mb-3" style="max-height: 200px;">
+                                        {% endif %}
+
+                                        <p class="card-text">
+                                            <strong>Stock:</strong> {{ product.quantity_in_stock }}<br>
+                                        </p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No products are under low stock.</p>
+                        {% endif %}
+
+                                            
+
+
+
+            
+
+
+
+            
+            <div class="text-center mt-4">
+                <a href="{% url 'store:stock_management' %}" class="btn btn-dark">Back to Panel</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

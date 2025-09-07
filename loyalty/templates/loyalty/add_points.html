@@ -1,0 +1,7 @@
+
+<form method="POST">
+    {% csrf_token %}
+    <label for="points">Enter Points:</label>
+    <input type="number" name="points" min="1" required>
+    <button type="submit">Add Points</button>
+</form>

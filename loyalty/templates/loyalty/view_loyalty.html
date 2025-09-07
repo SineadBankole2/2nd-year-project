@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <header class="bg-dark text-white py-3">
+        <div class="container text-center">
+            {% include 'header.html' %}
+        </div>
+    </header>
+
+    {% include 'nav.html' %}
+
+    <div class="container">
+        {% if user.is_authenticated %}
+          
+            <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+            <style>
+                .card-container {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    min-height: 100vh;
+                }
+
+                .card {
+                    width: 35rem;
+                    height: auto;
+                    padding: 2rem;
+                }
+
+                .btn-black {
+                    background-color: black;
+                    color: white;
+                    padding: 10px 20px;
+                    font-size: 1.2rem;
+                }
+
+                .card-title {
+                    font-size: 2rem;
+                }
+
+                .card-text {
+                    font-size: 1.2rem;
+                }
+            </style>
+
+            <div class="container-fluid card-container">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Your Loyalty Points</h5>
+                        {% if loyalty %}
+                            <p class="card-text">You currently have {{ loyalty.points }} loyalty points.</p>
+                        {% else %}
+                            <p class="card-text">You do not have any loyalty points.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="alert alert-warning" role="alert">
+                You need to <a href="{% url 'login' %}" class="alert-link">sign in</a> to view your loyalty points.
+            </div>
+        {% endif %}
+    </div>
+
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% endblock %}

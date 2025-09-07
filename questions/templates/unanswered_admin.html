@@ -1,0 +1,34 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Unanswered Questions</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container mt-5">
+        <h2>Unanswered Questions <span class="badge bg-dark">{{ count }}</span></h2>
+
+        {% if unanswered_questions %}
+            <ul class="list-group mt-4">
+                {% for question in unanswered_questions %}
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div>
+                            <p><strong>Question:</strong> {{ question.text }}</p>
+                            <p><strong>Asked by:</strong> {{ question.user.username }} on {{ question.created|date:"F j, Y, g:i a" }}</p>
+                        </div>
+                        <a href="{% url 'questions:answer_q' question.id %}" class="btn btn-sm btn-success">Answer</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="mt-4"> All questions have been answered</p>
+        {% endif %}
+    </div>
+
+</body>
+</html>

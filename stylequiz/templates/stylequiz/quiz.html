@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="bg-dark text-white py-3">
+    <div class="container text-center">
+        <h1>Style Quiz</h1>
+        <p>Find out what your fashion vibe really is.</p>
+    </div>
+</header>
+
+{% include 'nav.html' %}
+<div class="text-center mb-4">
+    <a href="{% url 'homepage' %}" class="btn" style="background-color: #ffc0cb; color: white;">
+        ← Back to Home
+    </a>
+</div>
+
+<div class="container mt-4">
+    <form method="post" class="card p-4 shadow-sm">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-dark">See My Style</button>
+    </form>
+
+    {% if result %}
+        <div class="alert alert-success mt-4 text-center">
+            <h4>Your style is: <strong>{{ result|title }}</strong></h4>
+            <p>
+                {% if result == "streetwear" %}
+                    You love bold fits, relaxed vibes, and street-ready essentials.
+                {% elif result == "formal" %}
+                    You're classy, polished, and always dressed to impress.
+                {% elif result == "minimalist" %}
+                    You appreciate clean lines, neutral colours, and timeless pieces.
+                {% elif result == "sporty" %}
+                    Comfort and performance come first — athleisure is your game.
+                {% endif %}
+            </p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

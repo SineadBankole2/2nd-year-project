@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<header class="bg-dark text-white py-3">
+    <div class="container text-center">
+        {% include 'header.html' %}
+    </div>
+</header>
+{% include 'nav.html' %}
+
+<style>
+    .padding-with-img {
+        padding-top: 1rem;
+    }
+    .padding-no-img {
+        padding-top: 0.5rem;
+    }
+</style>
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Reviews</h2>
+    {% if average_rating %}
+<div class="text-center mb-4" style="color: gold; font-size: 1.5rem;">
+    
+    {# Full stars #}
+    {% for _ in full_stars %}
+        ★
+    {% endfor %}
+
+    {# Half star #}
+    {% if has_half_star %}
+        ½
+    {% endif %}
+
+    {# Empty stars #}
+    {% for _ in empty_stars %}
+        ☆
+    {% endfor %}
+
+    <div style="font-size: 1rem; color: black;">
+        Average Rating: {{ average_rating }} / 5
+    </div>
+</div>
+{% endif %}
+
+
+
+
+    <div class="row justify-content-center">
+        {% for review in reviews %}
+        <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm text-center" style="font-size: 0.9rem;">
+
+                {% if review.product and review.product.image %}
+                    <img src="{{ review.product.image.url }}"
+                         class="card-img-top img-fluid p-2"
+                         alt="{{ review.product.name }}"
+                         style="max-height: 200px; width: auto; margin: 0 auto;">
+                {% endif %}
+
+                <div class="card-body p-3 d-flex flex-column justify-content-between 
+                    {% if review.product and review.product.image %}padding-with-img{% else %}padding-no-img{% endif %}">
+                    
+                    <div>
+                        <div class="star-rating mb-2" style="color: gold; font-size: 16px;">
+                            <span class="stars" data-rating="{{ review.rating }}"></span>
+                        </div>
+                        <h6 class="card-title mb-1">{{ review.user.username }}</h6>
+
+                        {% if review.product %}
+                            <p class="text-muted mb-1">
+                                {% if review.product.category.parent %}
+                                    {{ review.product.category.parent.name }} / {{ review.product.category.name }}
+                                {% else %}
+                                    {{ review.product.category.name }}
+                                {% endif %}
+                            </p>
+                            <p class="text-muted mb-1">{{ review.product.name }}</p>
+                        {% else %}
+                            <p class="text-muted mb-1">General Review</p>
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <p class="card-text">"{{ review.review_text|truncatechars:120 }}"</p>
+
+                        <button type="button"
+                                class="btn btn-outline-success btn-sm mt-2 like-btn"
+                                data-review-id="{{ review.id }}">
+                            👍 Helpful (<span class="helpful-count">{{ review.helpful_count }}</span>)
+                        </button>
+
+                        {% if user == review.user %}
+                        <form method="post" action="{% url 'delete_review' review.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-danger mt-2">Delete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <p class="text-center">No reviews yet. Be the first to share your thoughts!</p>
+        {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="mt-5">
+        <h3>Submit Your Review</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+                {{ form.product.label_tag }} {{ form.product }}
+            </div>
+            <div class="mb-3">
+                {{ form.review_text.label_tag }} {{ form.review_text }}
+            </div>
+            <div class="mb-3">
+                {{ form.rating.label_tag }} {{ form.rating }}
+            </div>
+            <button type="submit" class="btn btn-dark mt-3">Submit Review</button>
+        </form>
+    </div>
+    {% else %}
+        <p class="text-center mt-4">
+            Please <a href="{% url 'cos_accounts:signin' %}">sign in</a> to submit a review.
+        </p>
+    {% endif %}
+</div>
+
+<script>
+    
+    document.querySelectorAll('.stars').forEach(function(starElement) {
+        let rating = parseInt(starElement.getAttribute('data-rating'));
+        let starsHtml = '';
+        for (let i = 0; i < rating; i++) starsHtml += '★';
+        for (let i = rating; i < 5; i++) starsHtml += '☆';
+        starElement.innerHTML = starsHtml;
+    });
+
+    
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.startsWith(name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    
+    document.querySelectorAll('.like-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const reviewId = button.getAttribute('data-review-id');
+
+            fetch(`/reviews/like-review/${reviewId}/`, {
+                
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrftoken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const countSpan = button.querySelector('.helpful-count');
+                countSpan.textContent = data.helpful_count;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    });
+</script>
+
+{% endblock %}

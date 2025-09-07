@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Home - Clothing Store</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'store:filter_list' %}" class="btn btn-outline-dark btn-sm">
+             Filter Products
+        </a>
+    </div> 
+
+    
+    <main style="padding-top: 90px;">
+        <div class="container mt-3">
+            <div class="row">
+
+                
+                <div class="col-md-4">
+                    <div class="card" style="width: 20rem; height: 15rem;">
+                        <img src="{% static 'css/images/projectlogo.png' %}" alt="Women Clothing">
+                        <img src="{% static 'css/images/womenfashion.jpg' %}" alt="Women Clothing">
+                        <div class="card-body">
+                            <h5 class="card-title">Women</h5>
+                            <p class="card-text">Explore the latest fashion trends for women.</p>
+                            <a href="{% url 'womens' %}" class="btn btn-dark">Go to Women's Clothing</a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="col-md-4">
+                    <div class="card" style="width: 20rem; height: 15rem;">
+                        <img src="{% static 'css/images/projectlogo.png' %}" alt="Men Clothing">
+                        <img src="{% static 'css/images/mensfashion.jpg' %}" alt="Men Clothing">
+                        <div class="card-body">
+                            <h5 class="card-title">Men</h5>
+                            <p class="card-text">Discover our stylish men's collection.</p>
+                            <a href="{% url 'mens' %}" class="btn btn-dark">Go to Men's Clothing</a>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="col-md-4">
+                    <div class="card" style="width: 20rem; height: 15rem;">
+                        <img src="{% static 'css/images/projectlogo.png' %}" alt="Kids Clothing">
+                        <img src="{% static 'css/images/kidsfashion.jpg' %}" alt="Kids Clothing">
+                        <div class="card-body">
+                            <h5 class="card-title">Kids</h5>
+                            <p class="card-text">Trendy and comfortable clothing for kids.</p>
+                            <a href="{% url 'kids' %}" class="btn btn-dark">Go to kid's Clothing</a>
+                        </div>
+                    </div>
+                </div>
+                
+
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

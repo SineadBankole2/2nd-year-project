@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}Clothing Store - Homepage{% endblock %}
+
+{% block content %}
+<body class="d-flex flex-column mb-0 min-vh-50">  
+    <div class="container-fluid flex-grow-1">
+        <div class="header-container">
+            {% include 'header.html' %}
+        </div>
+    {% include 'nav.html' %}
+    <header>
+        <h1 class="text-center">Welcome to the Clothing Store</h1>
+    </header>
+    <main>
+        {% include 'main.html' %}
+    </main>
+{% endblock %}

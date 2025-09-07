@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Like Test</title>
+</head>
+<body>
+    <h2>Test Review</h2>
+    <p>{{ review.review_text }}</p>
+    <p>Helpful Count: <span class="helpful-count">{{ review.helpful_count }}</span></p>
+
+    <button class="like-btn" data-review-id="{{ review.id }}">👍 Helpful</button>
+
+    <script>
+        document.querySelector('.like-btn').addEventListener('click', function () {
+            const reviewId = this.getAttribute('data-review-id');
+
+            fetch(`/reviews/like-test-action/${reviewId}/`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector('.helpful-count').textContent = data.helpful_count;
+            });
+        });
+    </script>
+</body>
+</html>
