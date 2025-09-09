@@ -1,6 +1,3 @@
-Quick start (Windows / CMD)
-git clone https://github.com/<your-user>/<your-repo>.git
-cd <your-repo>
 
 py -m venv .venv
 call .venv\Scripts\activate
