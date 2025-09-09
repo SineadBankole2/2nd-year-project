@@ -59,43 +59,7 @@
                             </a>
                             <a href="#" class="btn btn-dark add-to-wishlist mb-3">Add to Wishlist</a>
 
-                            {% if user.is_authenticated %}
-                                <form method="post" action="{% url 'submit_review' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="product" value="{{ product.id }}">
-                                    
-                                    <div class="mb-2">
-                                        <label for="review-text-{{ product.id }}" class="form-label"><strong>Review</strong></label>
-                                        <textarea name="review_text" id="review-text-{{ product.id }}" rows="3" class="form-control" placeholder="Write your review..."></textarea>
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label for="rating-{{ product.id }}" class="form-label"><strong>Rating</strong></label>
-                                        <select name="rating" id="rating-{{ product.id }}" class="form-control">
-                                            {% for i in "12345" %}
-                                                <option value="{{ i }}">{{ i }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-sm btn-outline-dark">Submit Review</button>
-                                </form>
-                            {% else %}
-                                <p class="mt-2"><a href="{% url 'cos_accounts:signin' %}">Sign in</a> to leave a review.</p>
-                            {% endif %}
-
-                            <div class="mt-3">
-                                <strong>Reviews:</strong>
-                                {% for review in product.reviews.all %}
-                                    <div class="border p-2 mt-2">
-                                        <strong>{{ review.user.username }}</strong> rated: {{ review.rating }}★<br>
-                                        {{ review.review_text }}
-                                    </div>
-                                {% empty %}
-                                    <p>No reviews yet.</p>
-                                {% endfor %}
-                            </div>
-
+                            
                         </div>
                     </div>
                 </div>

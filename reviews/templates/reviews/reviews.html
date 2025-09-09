@@ -9,48 +9,28 @@
 {% include 'nav.html' %}
 
 <style>
-    .padding-with-img {
-        padding-top: 1rem;
-    }
-    .padding-no-img {
-        padding-top: 0.5rem;
-    }
+    .padding-with-img { padding-top: 1rem; }
+    .padding-no-img { padding-top: 0.5rem; }
 </style>
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">Reviews</h2>
+
     {% if average_rating %}
-<div class="text-center mb-4" style="color: gold; font-size: 1.5rem;">
-    
-    {# Full stars #}
-    {% for _ in full_stars %}
-        ★
-    {% endfor %}
-
-    {# Half star #}
-    {% if has_half_star %}
-        ½
-    {% endif %}
-
-    {# Empty stars #}
-    {% for _ in empty_stars %}
-        ☆
-    {% endfor %}
-
-    <div style="font-size: 1rem; color: black;">
-        Average Rating: {{ average_rating }} / 5
+    <div class="text-center mb-4" style="color: gold; font-size: 1.5rem;">
+        {% for _ in full_stars %}★{% endfor %}
+        {% if has_half_star %}½{% endif %}
+        {% for _ in empty_stars %}☆{% endfor %}
+        <div style="font-size: 1rem; color: black;">
+            Average Rating: {{ average_rating }} / 5
+        </div>
     </div>
-</div>
-{% endif %}
-
-
-
+    {% endif %}
 
     <div class="row justify-content-center">
         {% for review in reviews %}
         <div class="col-sm-6 col-md-4 col-lg-3 mb-4">
             <div class="card h-100 shadow-sm text-center" style="font-size: 0.9rem;">
-
                 {% if review.product and review.product.image %}
                     <img src="{{ review.product.image.url }}"
                          class="card-img-top img-fluid p-2"
@@ -130,7 +110,7 @@
 </div>
 
 <script>
-    
+    // Draw stars
     document.querySelectorAll('.stars').forEach(function(starElement) {
         let rating = parseInt(starElement.getAttribute('data-rating'));
         let starsHtml = '';
@@ -139,7 +119,7 @@
         starElement.innerHTML = starsHtml;
     });
 
-    
+    // CSRF helper
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {
@@ -154,31 +134,25 @@
         }
         return cookieValue;
     }
-
     const csrftoken = getCookie('csrftoken');
 
-    
+    // Like button
     document.querySelectorAll('.like-btn').forEach(button => {
         button.addEventListener('click', () => {
             const reviewId = button.getAttribute('data-review-id');
-
             fetch(`/reviews/like-review/${reviewId}/`, {
-                
                 method: 'POST',
-                headers: {
-                    'X-CSRFToken': csrftoken
-                }
+                headers: { 'X-CSRFToken': csrftoken }
             })
-            .then(response => response.json())
+            .then(r => r.json())
             .then(data => {
                 const countSpan = button.querySelector('.helpful-count');
-                countSpan.textContent = data.helpful_count;
+                if (data.helpful_count !== undefined) {
+                    countSpan.textContent = data.helpful_count;
+                }
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+            .catch(console.error);
         });
     });
 </script>
-
 {% endblock %}

@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -33,10 +34,10 @@ urlpatterns = [
     path('cart/', include('cart.urls')),
     path('loyalty/', include('loyalty.urls', namespace='loyalty')),
     path('questions/', include('questions.urls', namespace='questions')),  
-    path('order/', include('order.urls')),
-    path('stylequiz/', include('stylequiz.urls', namespace='stylequiz')),
+    path("orders/", include("order.urls")),    path('stylequiz/', include('stylequiz.urls', namespace='stylequiz')),
     path('vouchers/', include('vouchers.urls')),
-    
+    # Optional: fix old/bad link `/order/orders/` -> `/orders/history/`
+    path('order/orders/', RedirectView.as_view(url='/orders/history/', permanent=False)),
 
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
